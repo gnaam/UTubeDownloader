@@ -2,7 +2,9 @@ import sys
 from pytube import YouTube
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
+## to do
+# create file
+##
 class UTubeDownloader(QWidget):
 	def __init__(self):
 		super(UTubeDownloader, self).__init__()
@@ -66,5 +68,13 @@ class UTubeDownloader(QWidget):
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
+	icon_images = QIcon()
+	icon_images.addFile("img/icon1616.png",QSize(16,16))
+	icon_images.addFile("img/icon3232.png",QSize(32,32))
+	icon_images.addFile("img/icon4848.png",QSize(48,48))
+	icon_images.addFile("img/icon9696.png",QSize(96,96))
+	icon_images.addFile("img/icon144144.png",QSize(144,144))
+	#app.setWindowIcon(QIcon("./img/icon.png"))
+	app.setWindowIcon(icon_images)
 	yd = UTubeDownloader()
 	sys.exit(app.exec_())
