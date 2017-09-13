@@ -17,7 +17,7 @@ class UTubeDownloader(QWidget):
 		self.vbox.addWidget(self.search_button)
 		self.vbox.addStretch()
 		self.setLayout(self.vbox)
-		self.setWindowTitle("YouTube Downloader")
+		self.setWindowTitle("UTube Downloader")
 		self.show()
 
 	def takeInput(self):
