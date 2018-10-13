@@ -1,7 +1,8 @@
 import sys, os
 from pytube import YouTube
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 class UTubeDownloader(QWidget):
 	def __init__(self):
@@ -66,8 +67,11 @@ class UTubeDownloader(QWidget):
 	def listVideos(self):
 		try:
 			self.yt = YouTube(str(self.link));
-			self.videos = self.yt.get_videos();
-			self.video_title = QLabel(self.yt.filename)
+			#quality = ["720p","480p","360p","240p","144p"]
+			#https://youtu.be/EatzcaVJRMs
+			self.videos = self.yt.streams.filter(file_extension='mp4').all();
+			#print(self.videos)
+			self.video_title = QLabel(self.yt.title)
 			self.video_title.setAlignment(Qt.AlignCenter)
 			self.vbox.addWidget(self.video_title)
 			self.vbox.addStretch()
@@ -75,6 +79,7 @@ class UTubeDownloader(QWidget):
 			self.checkb_list = []
 			for vid in self.videos:
 				obj = 'cb'+str(s)
+				#obj = QPushButton((str(s)+". "+str(vid)), self)
 				obj = QPushButton((str(s)+". "+str(vid)), self)
 				self.checkb_list.append((obj,s))
 				obj.setCheckable(False)
@@ -106,26 +111,27 @@ class UTubeDownloader(QWidget):
 		destination = os.environ['HOME']+'/Videos/UTube'
 		return destination
 
+	def show_progress_bar(self,stream, chunk, file_handle, bytes_remaining):
+		percent = 100 - (bytes_remaining * 100. /stream.filesize)
+		self.pbar.setValue(percent)
+
 	def saveVideo(self):
 		sender = self.sender()
 		n = int(sender.text()[0])
 		video = self.videos[n-1]
 		# change directory
 		destination = self.createDirectory()
-		video.download(destination, on_progress=self.print_status)
+		self.yt.register_on_progress_callback(self.show_progress_bar)
+		video.download(destination)
 
-	def print_status(self,progress,file_size,start):
-		percent = progress * 100. / file_size
-		self.pbar.setValue(percent)
-		#print percent
 
 app = QApplication(sys.argv)
 icon_images = QIcon()
-icon_images.addFile("img/icon1616.png",QSize(16,16))
-icon_images.addFile("img/icon3232.png",QSize(32,32))
-icon_images.addFile("img/icon4848.png",QSize(48,48))
-icon_images.addFile("img/icon9696.png",QSize(96,96))
-icon_images.addFile("img/icon144144.png",QSize(144,144))
+icon_images.addFile("./img/icon1616.png",QSize(16,16))
+icon_images.addFile("./img/icon3232.png",QSize(32,32))
+icon_images.addFile("./img/icon4848.png",QSize(48,48))
+icon_images.addFile("./img/icon9696.png",QSize(96,96))
+icon_images.addFile("./img/icon144144.png",QSize(144,144))
 app.setWindowIcon(icon_images)
 yd = UTubeDownloader()
 sys.exit(app.exec_())
